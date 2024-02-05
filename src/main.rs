@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, fs};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -12,7 +12,16 @@ fn main() {
         return;
     }
 
-    println!("input file is {input_file}");
+    let input_file_contents = match fs::read_to_string(input_file) {
+        Ok(contents) => {
+            //println!("{contents}");
+            contents
+        }
+        Err(_) => {
+            println!("cannot open {input_file}");
+            return;
+        }
+    };
 }
 
 fn print_usage() {
