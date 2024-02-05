@@ -1,4 +1,5 @@
 use std::{env, fs};
+use serde_json::Value;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -17,6 +18,17 @@ fn main() {
         },
         Err(_) => {
             println!("cannot open {input_file}");
+            return;
+        }
+    };
+
+    let json_value : Value = match serde_json::from_str(input_file_contents.as_str()) {
+        Ok(value) => {
+            //println!("{value}");
+            value
+        },
+        Err(_) => {
+            println!("cannot parse {input_file} as json value");
             return;
         }
     };
