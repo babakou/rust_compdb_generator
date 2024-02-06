@@ -11,12 +11,40 @@ struct WorkspaceSetting {
     compile_flags: Vec<String>,
 }
 
+#[derive(Debug, Default)]
+struct FolderSetting {
+    folder_path: String,
+    src_pattern: Vec<String>,
+    exclude_pattern: Vec<String>,
+    compile_flags: Vec<String>
+}
+
 impl Display for WorkspaceSetting {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         println!("================workspace settings===================");
         println!("c_compiler_path : {}", self.c_compiler_path);
         println!("cpp_compiler_path : {}", self.cpp_compiler_path);
         println!("root_folder : {}", self.root_folder_path);
+        println!("src_pattern:");
+        for src_pattern in &self.src_pattern {
+            println!("  {}", src_pattern);
+        }
+        println!("exclude_pattern:");
+        for exclude_pattern in &self.exclude_pattern {
+            println!("  {}", exclude_pattern);
+        }
+        println!("compile_flags:");
+        for compile_flag in &self.compile_flags {
+            println!("  {}", compile_flag);
+        }
+        Ok(())
+    }
+}
+
+impl Display for FolderSetting {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        println!("================folder settings===================");
+        println!("folder_path : {}", self.folder_path);
         println!("src_pattern:");
         for src_pattern in &self.src_pattern {
             println!("  {}", src_pattern);
@@ -92,6 +120,24 @@ fn main() {
         .collect();
 
     //println!("{}", ws_setting);
+    //println!("{:?}", json_value["folders"]);
+    for folder_setting_value in json_value["folders"].as_array().unwrap() {
+        let mut folder_setting = FolderSetting::default();
+        folder_setting.folder_path = folder_setting_value["folder"].to_string();
+        folder_setting.src_pattern = match folder_setting_value["src_pattern"].as_array() {
+            Some(src_patterns) => src_patterns.iter().map(|v| v.to_string()).collect(),
+            None => vec![]
+        };
+        folder_setting.exclude_pattern = match folder_setting_value["exclude_pattern"].as_array() {
+            Some(exclude_patterns) => exclude_patterns.iter().map(|v| v.to_string()).collect(),
+            None => vec![]
+        };
+        folder_setting.compile_flags = match folder_setting_value["compile_flags"].as_array() {
+            Some(compile_flags) => compile_flags.iter().map(|v| v.to_string()).collect(),
+            None => vec![]
+        };
+        //println!("{}", folder_setting);
+    }
 }
 
 fn print_usage() {
