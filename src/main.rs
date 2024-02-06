@@ -1,4 +1,4 @@
-use std::{env, fs};
+use std::{env, fmt::Display, fs};
 use serde_json::Value;
 
 #[derive(Debug, Default)]
@@ -9,6 +9,28 @@ struct WorkspaceSetting {
     src_pattern: Vec<String>,
     exclude_pattern: Vec<String>,
     compile_flags: Vec<String>,
+}
+
+impl Display for WorkspaceSetting {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        println!("================workspace settings===================");
+        println!("c_compiler_path : {}", self.c_compiler_path);
+        println!("cpp_compiler_path : {}", self.cpp_compiler_path);
+        println!("root_folder : {}", self.root_folder);
+        println!("src_pattern:");
+        for src_pattern in &self.src_pattern {
+            println!("  {}", src_pattern);
+        }
+        println!("exclude_pattern:");
+        for exclude_pattern in &self.exclude_pattern {
+            println!("  {}", exclude_pattern);
+        }
+        println!("compile_flags:");
+        for compile_flag in &self.compile_flags {
+            println!("  {}", compile_flag);
+        }
+        Ok(())
+    }
 }
 
 fn main() {
@@ -69,7 +91,7 @@ fn main() {
         .map(|v| v.to_string())
         .collect();
 
-    //println!("{:?}", ws_setting);
+    //println!("{}", ws_setting);
 }
 
 fn print_usage() {
