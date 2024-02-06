@@ -8,6 +8,7 @@ struct WorkspaceSetting {
     root_folder_path: String,
     src_pattern: Vec<String>,
     exclude_pattern: Vec<String>,
+    include_folders: Vec<String>,
     compile_flags: Vec<String>,
 }
 
@@ -16,6 +17,7 @@ struct FolderSetting {
     folder_path: String,
     src_pattern: Vec<String>,
     exclude_pattern: Vec<String>,
+    include_folders: Vec<String>,
     compile_flags: Vec<String>
 }
 
@@ -32,6 +34,10 @@ impl Display for WorkspaceSetting {
         println!("exclude_pattern:");
         for exclude_pattern in &self.exclude_pattern {
             println!("  {}", exclude_pattern);
+        }
+        println!("include_folders:");
+        for include_folder in &self.include_folders {
+            println!("  {}", include_folder);
         }
         println!("compile_flags:");
         for compile_flag in &self.compile_flags {
@@ -52,6 +58,10 @@ impl Display for FolderSetting {
         println!("exclude_pattern:");
         for exclude_pattern in &self.exclude_pattern {
             println!("  {}", exclude_pattern);
+        }
+        println!("include_folders:");
+        for include_folder in &self.include_folders {
+            println!("  {}", include_folder);
         }
         println!("compile_flags:");
         for compile_flag in &self.compile_flags {
@@ -111,6 +121,13 @@ fn main() {
         .iter()
         .map(|v| v.to_string())
         .collect();
+    ws_setting.include_folders =
+        json_value["workspace_include_folders"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|v| v.to_string())
+        .collect();
     ws_setting.compile_flags =
         json_value["workspace_compile_flags"]
         .as_array()
@@ -130,6 +147,10 @@ fn main() {
         };
         folder_setting.exclude_pattern = match folder_setting_value["exclude_pattern"].as_array() {
             Some(exclude_patterns) => exclude_patterns.iter().map(|v| v.to_string()).collect(),
+            None => vec![]
+        };
+        folder_setting.include_folders = match folder_setting_value["include_folders"].as_array() {
+            Some(include_folders) => include_folders.iter().map(|v| v.to_string()).collect(),
             None => vec![]
         };
         folder_setting.compile_flags = match folder_setting_value["compile_flags"].as_array() {
