@@ -107,34 +107,22 @@ fn main() {
     ws_setting.c_compiler_path = json_value["c_compiler_path"].to_string();
     ws_setting.cpp_compiler_path = json_value["cpp_compiler_path"].to_string();
     ws_setting.root_folder_path = json_value["workspace_root_folder"].to_string();
-    ws_setting.src_pattern = 
-        json_value["workspace_src_pattern"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .map(|v| v.to_string())
-        .collect();
-    ws_setting.exclude_pattern = 
-        json_value["workspace_exclude_pattern"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .map(|v| v.to_string())
-        .collect();
-    ws_setting.include_folders =
-        json_value["workspace_include_folders"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .map(|v| v.to_string())
-        .collect();
-    ws_setting.compile_flags =
-        json_value["workspace_compile_flags"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .map(|v| v.to_string())
-        .collect();
+    ws_setting.src_pattern = match json_value["workspace_src_pattern"].as_array() {
+        Some(src_pattern) => src_pattern.iter().map(|v| v.to_string()).collect(),
+        None => vec!()
+    };
+    ws_setting.exclude_pattern = match json_value["workspace_exclude_pattern"].as_array() {
+        Some(exclude_pattern) => exclude_pattern.iter().map(|v| v.to_string()).collect(),
+        None => vec!()
+    };
+    ws_setting.include_folders = match json_value["workspace_include_folders"].as_array() {
+        Some(include_folder) => include_folder.iter().map(|v| v.to_string()).collect(),
+        None => vec!()
+    };
+    ws_setting.compile_flags = match json_value["workspace_compile_flags"].as_array() {
+        Some(compile_flags) => compile_flags.iter().map(|v| v.to_string()).collect(),
+        None => vec!()
+    };
 
     //println!("{}", ws_setting);
     //println!("{:?}", json_value["folders"]);
