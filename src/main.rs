@@ -5,7 +5,7 @@ use serde_json::Value;
 struct WorkspaceSetting {
     c_compiler_path: String,
     cpp_compiler_path: String,
-    root_folder: String,
+    root_folder_path: String,
     src_pattern: Vec<String>,
     exclude_pattern: Vec<String>,
     compile_flags: Vec<String>,
@@ -16,7 +16,7 @@ impl Display for WorkspaceSetting {
         println!("================workspace settings===================");
         println!("c_compiler_path : {}", self.c_compiler_path);
         println!("cpp_compiler_path : {}", self.cpp_compiler_path);
-        println!("root_folder : {}", self.root_folder);
+        println!("root_folder : {}", self.root_folder_path);
         println!("src_pattern:");
         for src_pattern in &self.src_pattern {
             println!("  {}", src_pattern);
@@ -68,7 +68,7 @@ fn main() {
     let mut ws_setting = WorkspaceSetting::default();
     ws_setting.c_compiler_path = json_value["c_compiler_path"].to_string();
     ws_setting.cpp_compiler_path = json_value["cpp_compiler_path"].to_string();
-    ws_setting.root_folder = json_value["workspace_root_folder"].to_string();
+    ws_setting.root_folder_path = json_value["workspace_root_folder"].to_string();
     ws_setting.src_pattern = 
         json_value["workspace_src_pattern"]
         .as_array()
