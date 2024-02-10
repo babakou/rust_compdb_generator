@@ -1,4 +1,5 @@
 use std::{env, fmt::Display, fs};
+use glob::glob;
 use serde_json::Value;
 
 #[derive(Debug, Default)]
@@ -146,6 +147,26 @@ fn main() {
             None => vec![]
         };
         //println!("{}", folder_setting);
+
+        let mut folder_all_exclude_pattern = ws_setting.exclude_pattern.clone();
+        folder_all_exclude_pattern.append(folder_setting.exclude_pattern.clone().as_mut());
+
+        let mut excluded_src : Vec<String> = Vec::new();
+        for exclude_pattern in folder_all_exclude_pattern {
+            //println!("exclude glob pattern: {}", format!("{}/{}/{}", ws_setting.root_folder_path, folder_setting.folder_path, exclude_pattern).as_str());
+            if let Ok(paths) = glob(format!("{}/{}/{}",
+                                    ws_setting.root_folder_path,
+                                    folder_setting.folder_path,
+                                    exclude_pattern).as_str()) {
+                for path in paths {
+                    let tmp = path.unwrap().to_string_lossy().replace("\\", "/");
+                    if (!excluded_src.contains(&tmp)) {
+                        //println!("{tmp}");
+                        excluded_src.push(tmp);
+                    }
+                }
+            }
+        }
     }
 }
 
