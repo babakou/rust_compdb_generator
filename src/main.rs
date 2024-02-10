@@ -105,8 +105,8 @@ fn main() {
     };
 
     let mut ws_setting = WorkspaceSetting::default();
-    ws_setting.c_compiler_path = json_value["c_compiler_path"].to_string();
-    ws_setting.cpp_compiler_path = json_value["cpp_compiler_path"].to_string();
+    ws_setting.c_compiler_path = json_value["c_compiler_path"].to_string().replace("\"", "");
+    ws_setting.cpp_compiler_path = json_value["cpp_compiler_path"].to_string().replace("\"", "");
     ws_setting.root_folder_path = json_value["workspace_root_folder"].to_string().replace("\"", "");
     ws_setting.src_pattern = match json_value["workspace_src_pattern"].as_array() {
         Some(src_pattern) => src_pattern.iter().map(|v| v.to_string().replace("\"", "")).collect(),
@@ -117,11 +117,11 @@ fn main() {
         None => vec!()
     };
     ws_setting.include_folders = match json_value["workspace_include_folders"].as_array() {
-        Some(include_folder) => include_folder.iter().map(|v| v.to_string()).collect(),
+        Some(include_folder) => include_folder.iter().map(|v| v.to_string().replace("\"", "")).collect(),
         None => vec!()
     };
     ws_setting.compile_flags = match json_value["workspace_compile_flags"].as_array() {
-        Some(compile_flags) => compile_flags.iter().map(|v| v.to_string()).collect(),
+        Some(compile_flags) => compile_flags.iter().map(|v| v.to_string().replace("\"", "")).collect(),
         None => vec!()
     };
 
@@ -139,11 +139,11 @@ fn main() {
             None => vec![]
         };
         folder_setting.include_folders = match folder_setting_value["include_folders"].as_array() {
-            Some(include_folders) => include_folders.iter().map(|v| v.to_string()).collect(),
+            Some(include_folders) => include_folders.iter().map(|v| v.to_string().replace("\"", "")).collect(),
             None => vec![]
         };
         folder_setting.compile_flags = match folder_setting_value["compile_flags"].as_array() {
-            Some(compile_flags) => compile_flags.iter().map(|v| v.to_string()).collect(),
+            Some(compile_flags) => compile_flags.iter().map(|v| v.to_string().replace("\"", "")).collect(),
             None => vec![]
         };
         //println!("{}", folder_setting);
