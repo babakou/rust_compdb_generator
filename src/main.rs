@@ -167,6 +167,27 @@ fn main() {
                 }
             }
         }
+
+        let mut folder_all_src_pattern = ws_setting.src_pattern.clone();
+        folder_all_src_pattern.append(folder_setting.src_pattern.clone().as_mut());
+
+        let mut src : Vec<String> = Vec::new();
+        for src_pattern in folder_all_src_pattern {
+            //println!("src glob pattern: {}", format!("{}/{}/{}", ws_setting.root_folder_path, folder_setting.folder_path, src_pattern).as_str());
+            if let Ok(paths) = glob(format!("{}/{}/{}", 
+                                            ws_setting.root_folder_path, 
+                                            folder_setting.folder_path,
+                                            src_pattern).as_str()) {
+                for path in paths {
+                    //println!("{}", path.unwrap().to_string_lossy().replace("\\", "/"));
+                    let tmp = path.unwrap().to_string_lossy().replace("\\", "/");
+                    if (!src.contains(&tmp) && !excluded_src.contains(&tmp)) {
+                        //println!("{tmp}");
+                        src.push(tmp);
+                    }
+                }
+            }
+        }
     }
 }
 
