@@ -1,6 +1,7 @@
-use std::{env, fmt::Display, fs};
+use std::{env, fmt::Display, fs, io::Write};
 use glob::glob;
 use serde_json::{Value, json};
+use std::fs::File;
 
 #[derive(Debug, Default)]
 struct WorkspaceSetting {
@@ -222,6 +223,11 @@ fn main() {
             compile_commands.push(compile_command);
         }
     }
+
+    let mut compile_commands_file = File::create("compile_commands.json").unwrap();
+    compile_commands_file.write_all(
+        serde_json::to_string_pretty(&compile_commands).unwrap().as_bytes()
+    ).unwrap();
 }
 
 fn print_usage() {
