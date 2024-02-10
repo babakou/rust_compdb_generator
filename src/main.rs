@@ -1,6 +1,6 @@
 use std::{env, fmt::Display, fs};
 use glob::glob;
-use serde_json::Value;
+use serde_json::{Value, json};
 
 #[derive(Debug, Default)]
 struct WorkspaceSetting {
@@ -125,6 +125,7 @@ fn main() {
         None => vec!()
     };
 
+    let mut compile_commands: Vec<Value> = Vec::new();
     //println!("{}", ws_setting);
     //println!("{:?}", json_value["folders"]);
     for folder_setting_value in json_value["folders"].as_array().unwrap() {
@@ -187,6 +188,38 @@ fn main() {
                     }
                 }
             }
+        }
+
+        let mut compile_arguments : Vec<String> = Vec::new();
+        for ws_include in &ws_setting.include_folders {
+            compile_arguments.push(format!("-include{}", ws_include));
+        }
+        for folder_include in &folder_setting.include_folders {
+            compile_arguments.push(format!("-include{}", folder_include));
+        }
+
+        compile_arguments.extend(ws_setting.compile_flags.clone());
+        compile_arguments.extend(folder_setting.compile_flags.clone());
+        //println!("{:?}", compile_arguments);
+
+        for s in src {
+            let mut compile_command = json!({
+                "directory": "",
+                "arguments": [],
+                "file": ""
+            });
+
+            compile_command["directory"] = Value::from(ws_setting.root_folder_path.as_str());
+            compile_command["file"] = Value::from(s.as_str());
+            let mut arguments_with_compiler = compile_arguments.clone();
+            if s.contains(".cpp") || s.contains(".cxx") || s.contains(".cc") {
+                arguments_with_compiler.insert(0, ws_setting.cpp_compiler_path.clone());
+            } else {
+                arguments_with_compiler.insert(0, ws_setting.c_compiler_path.clone());
+            }
+            compile_command["arguments"] = Value::from(arguments_with_compiler);
+
+            compile_commands.push(compile_command);
         }
     }
 }
