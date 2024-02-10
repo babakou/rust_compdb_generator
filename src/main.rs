@@ -106,13 +106,13 @@ fn main() {
     let mut ws_setting = WorkspaceSetting::default();
     ws_setting.c_compiler_path = json_value["c_compiler_path"].to_string();
     ws_setting.cpp_compiler_path = json_value["cpp_compiler_path"].to_string();
-    ws_setting.root_folder_path = json_value["workspace_root_folder"].to_string();
+    ws_setting.root_folder_path = json_value["workspace_root_folder"].to_string().replace("\"", "");
     ws_setting.src_pattern = match json_value["workspace_src_pattern"].as_array() {
-        Some(src_pattern) => src_pattern.iter().map(|v| v.to_string()).collect(),
+        Some(src_pattern) => src_pattern.iter().map(|v| v.to_string().replace("\"", "")).collect(),
         None => vec!()
     };
     ws_setting.exclude_pattern = match json_value["workspace_exclude_pattern"].as_array() {
-        Some(exclude_pattern) => exclude_pattern.iter().map(|v| v.to_string()).collect(),
+        Some(exclude_pattern) => exclude_pattern.iter().map(|v| v.to_string().replace("\"", "")).collect(),
         None => vec!()
     };
     ws_setting.include_folders = match json_value["workspace_include_folders"].as_array() {
@@ -128,13 +128,13 @@ fn main() {
     //println!("{:?}", json_value["folders"]);
     for folder_setting_value in json_value["folders"].as_array().unwrap() {
         let mut folder_setting = FolderSetting::default();
-        folder_setting.folder_path = folder_setting_value["folder"].to_string();
+        folder_setting.folder_path = folder_setting_value["folder"].to_string().replace("\"", "");
         folder_setting.src_pattern = match folder_setting_value["src_pattern"].as_array() {
-            Some(src_patterns) => src_patterns.iter().map(|v| v.to_string()).collect(),
+            Some(src_patterns) => src_patterns.iter().map(|v| v.to_string().replace("\"", "")).collect(),
             None => vec![]
         };
         folder_setting.exclude_pattern = match folder_setting_value["exclude_pattern"].as_array() {
-            Some(exclude_patterns) => exclude_patterns.iter().map(|v| v.to_string()).collect(),
+            Some(exclude_patterns) => exclude_patterns.iter().map(|v| v.to_string().replace("\"", "")).collect(),
             None => vec![]
         };
         folder_setting.include_folders = match folder_setting_value["include_folders"].as_array() {
