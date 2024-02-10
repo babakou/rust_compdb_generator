@@ -151,7 +151,7 @@ fn main() {
         //println!("{}", folder_setting);
 
         let mut folder_all_exclude_pattern = ws_setting.exclude_pattern.clone();
-        folder_all_exclude_pattern.append(folder_setting.exclude_pattern.clone().as_mut());
+        folder_all_exclude_pattern.append(folder_setting.exclude_pattern.as_mut());
 
         let mut excluded_src : Vec<String> = Vec::new();
         for exclude_pattern in folder_all_exclude_pattern {
@@ -162,7 +162,7 @@ fn main() {
                                     exclude_pattern).as_str()) {
                 for path in paths {
                     let tmp = path.unwrap().to_string_lossy().replace("\\", "/");
-                    if (!excluded_src.contains(&tmp)) {
+                    if !excluded_src.contains(&tmp) {
                         //println!("{tmp}");
                         excluded_src.push(tmp);
                     }
@@ -171,7 +171,7 @@ fn main() {
         }
 
         let mut folder_all_src_pattern = ws_setting.src_pattern.clone();
-        folder_all_src_pattern.append(folder_setting.src_pattern.clone().as_mut());
+        folder_all_src_pattern.append(folder_setting.src_pattern.as_mut());
 
         let mut src : Vec<String> = Vec::new();
         for src_pattern in folder_all_src_pattern {
@@ -183,7 +183,7 @@ fn main() {
                 for path in paths {
                     //println!("{}", path.unwrap().to_string_lossy().replace("\\", "/"));
                     let tmp = path.unwrap().to_string_lossy().replace("\\", "/");
-                    if (!src.contains(&tmp) && !excluded_src.contains(&tmp)) {
+                    if !src.contains(&tmp) && !excluded_src.contains(&tmp) {
                         //println!("{tmp}");
                         src.push(tmp);
                     }
@@ -200,7 +200,7 @@ fn main() {
         }
 
         compile_arguments.extend(ws_setting.compile_flags.clone());
-        compile_arguments.extend(folder_setting.compile_flags.clone());
+        compile_arguments.extend(folder_setting.compile_flags);
         //println!("{:?}", compile_arguments);
 
         for s in src {
